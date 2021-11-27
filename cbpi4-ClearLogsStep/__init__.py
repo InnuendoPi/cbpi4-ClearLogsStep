@@ -56,4 +56,4 @@ def setup(cbpi):
     :return:
     '''
 
-    cbpi.plugin.register("ClearLogsStep", ClearLogsStepStep)
+    cbpi.plugin.register("ClearLogsStep", ClearLogsStep)
