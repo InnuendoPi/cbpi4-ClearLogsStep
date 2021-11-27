@@ -24,33 +24,29 @@ import warnings
 class ClearLogsStep(CBPiStep):
 
 	async def NextStep(self, **kwargs):
-			await self.next()
+        await self.next()
 
 	async def on_timer_done(self,timer):
-                self.summary = self.props.get("Notification","")
+        self.summary = self.props.get("Notification","")
 
-                if self.AutoNext == True:
-                    self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO)
-                    await self.next()
-                else:
-                    self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO, action=[NotificationAction("Next Step", self.NextStep)])
-                    await self.push_update()
+        if self.AutoNext == True:
+            self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO)
+            await self.next()
+        else:
+            self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO, action=[NotificationAction("Next Step", self.NextStep)])
+            await self.push_update()
 
 	async def on_start(self):
 
-                log_names = listdir('./logs/sensor_*.log*')
-                for log_name in log_names:
-                        remove(LOG_DIR+log_name)
+        log_names = listdir('./logs/sensor_*.log*')
+        for log_name in log_names:
+            remove(LOG_DIR+log_name)
 
-'''		if self.AutoMode == True:
-			await self.setAutoMode(True)
-'''
-		self.summary = "Waiting for Target Temp"
 		await self.push_update()
 
 	async def run(self):
-		self.cbpi.notify('ClearLogsStep', '...', NotificationType.INFO)
 
+		self.cbpi.notify('ClearLogsStep', '...', NotificationType.INFO)
 		return StepResult.DONE
 
 
