@@ -1,0 +1,2 @@
+include cbpi4-ClearLogsStep/config.yaml
+recursive-include cbpi4-ClearLogsStep/static *
