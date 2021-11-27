@@ -28,42 +28,38 @@ class ClearLogsStep(CBPiStep):
 
 	async def on_timer_done(self,timer):
         self.summary = self.props.get("Notification","")
-		
+
 		if self.AutoNext == True:
             self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO)
             await self.next()
         else:
             self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO, action=[NotificationAction("Next Step", self.NextStep)])
             await self.push_update()
-			
+
 	async def on_start(self):
-  
-        log_names = listdir('./logs/sensor_*.log*')
-        for log_name in log_names:
-                remove(LOG_DIR+log_name)
-	 
-#        all_filenames = glob.glob('./logs/sensor_%s.log*' % name)
-#        for f in all_filenames:
-#            os.remove(f)
+
+                log_names = listdir('./logs/sensor_*.log*')
+                for log_name in log_names:
+                        remove(LOG_DIR+log_name)
 
 		if self.AutoMode == True:
 			await self.setAutoMode(True)
 		self.summary = "Waiting for Target Temp"
 		await self.push_update()
-		
+
 	async def run(self):
 		self.cbpi.notify('ClearLogsStep', '...', NotificationType.INFO)
-	
+
 		return StepResult.DONE
-		
+
 
 
 def setup(cbpi):
     '''
-    This method is called by the server during startup 
+    This method is called by the server during startup
     Here you need to register your plugins at the server
-    :param cbpi: the cbpi core 
-    :return: 
-    '''    
-    
+    :param cbpi: the cbpi core
+    :return:
+    '''
+
     cbpi.plugin.register("ClearLogsStep", ClearLogsStepStep)
