@@ -27,14 +27,14 @@ class ClearLogsStep(CBPiStep):
 			await self.next()
 
 	async def on_timer_done(self,timer):
-        self.summary = self.props.get("Notification","")
+                self.summary = self.props.get("Notification","")
 
-		if self.AutoNext == True:
-            self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO)
-            await self.next()
-        else:
-            self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO, action=[NotificationAction("Next Step", self.NextStep)])
-            await self.push_update()
+                if self.AutoNext == True:
+                    self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO)
+                    await self.next()
+                else:
+                    self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO, action=[NotificationAction("Next Step", self.NextStep)])
+                    await self.push_update()
 
 	async def on_start(self):
 
