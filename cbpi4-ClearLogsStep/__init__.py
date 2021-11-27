@@ -38,9 +38,12 @@ class ClearLogsStep(CBPiStep):
             await self.push_update()
 
     async def on_start(self):
-        log_names = listdir('./logs/sensor_*.log*')
-        for log_name in log_names:
-            remove(LOG_DIR+log_name)
+        # log_names = listdir('./logs/sensor_*.log*')
+        log_names = glob.glob('./logs/sensor_*.log*')
+        for f in log_names:
+            os.remove(f)
+        # for log_name in log_names:
+            # remove(LOG_DIR+log_name)
         await self.push_update()
 
     async def run(self):
