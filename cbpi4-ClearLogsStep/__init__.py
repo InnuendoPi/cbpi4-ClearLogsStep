@@ -18,37 +18,34 @@ import numpy as np
 import requests
 import warnings
 
-@parameters([Property.Text(label="Notification",configurable = True, description = "Text for notification"),
-             Property.Select(label="AutoNext",options=["Yes","No"], description="Automatically move to next step (Yes) or pause after Notification (No)")])
 
+@parameters([Property.Text(label="Notification", configurable=True, description="Text for notification"),
+             Property.Select(label="AutoNext", options=["Yes", "No"], description="Automatically move to next step (Yes) or pause after Notification (No)")])
 class ClearLogsStep(CBPiStep):
 
-	async def NextStep(self, **kwargs):
+    async def NextStep(self, **kwargs):
         await self.next()
 
-	async def on_timer_done(self,timer):
-        self.summary = self.props.get("Notification","")
-
+    async def on_timer_done(self, timer):
+        self.summary = self.props.get("Notification", "")
         if self.AutoNext == True:
-            self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO)
+            self.cbpi.notify(self.name, self.props.get(
+                "Notification", ""), NotificationType.INFO)
             await self.next()
         else:
-            self.cbpi.notify(self.name, self.props.get("Notification",""), NotificationType.INFO, action=[NotificationAction("Next Step", self.NextStep)])
+            self.cbpi.notify(self.name, self.props.get("Notification", ""), NotificationType.INFO, action=[
+                NotificationAction("Next Step", self.NextStep)])
             await self.push_update()
 
-	async def on_start(self):
-
+    async def on_start(self):
         log_names = listdir('./logs/sensor_*.log*')
         for log_name in log_names:
             remove(LOG_DIR+log_name)
+        await self.push_update()
 
-		await self.push_update()
-
-	async def run(self):
-
-		self.cbpi.notify('ClearLogsStep', '...', NotificationType.INFO)
-		return StepResult.DONE
-
+    async def run(self):
+        self.cbpi.notify('ClearLogsStep', '...', NotificationType.INFO)
+        return StepResult.DONE
 
 
 def setup(cbpi):
