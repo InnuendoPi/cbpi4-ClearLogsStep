@@ -20,6 +20,7 @@ import warnings
 import glob
 import os
 
+
 @parameters([Property.Text(label="Notification", configurable=True, description="Text for notification"),
              Property.Select(label="AutoNext", options=["Yes", "No"], description="Automatically move to next step (Yes) or pause after Notification (No)")])
 class ClearLogsStep(CBPiStep):
@@ -27,28 +28,21 @@ class ClearLogsStep(CBPiStep):
     async def NextStep(self, **kwargs):
         await self.next()
 
-    async def on_timer_done(self, timer):
-        self.summary = self.props.get("Notification", "")
-        if self.AutoNext == True:
-            self.cbpi.notify(self.name, self.props.get(
-                "Notification", ""), NotificationType.INFO)
-            await self.next()
-        else:
-            self.cbpi.notify(self.name, self.props.get("Notification", ""), NotificationType.INFO, action=[
-                NotificationAction("Next Step", self.NextStep)])
-            await self.push_update()
-
     async def on_start(self):
-        # log_names = listdir('./logs/sensor_*.log*')
         log_names = glob.glob('./logs/sensor_*.log*')
         for f in log_names:
             os.remove(f)
-        # for log_name in log_names:
-            # remove(LOG_DIR+log_name)
+
+    async def on_stop(self):
+        self.summary = ""
         await self.push_update()
 
     async def run(self):
+        self.AutoNext = True
+        await self.push_update()
         self.cbpi.notify('ClearLogsStep', '...', NotificationType.INFO)
+        await self.next()
+
         return StepResult.DONE
 
 
