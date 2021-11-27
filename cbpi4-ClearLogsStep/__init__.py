@@ -42,8 +42,9 @@ class ClearLogsStep(CBPiStep):
                 for log_name in log_names:
                         remove(LOG_DIR+log_name)
 
-		if self.AutoMode == True:
+'''		if self.AutoMode == True:
 			await self.setAutoMode(True)
+'''
 		self.summary = "Waiting for Target Temp"
 		await self.push_update()
 
