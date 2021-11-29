@@ -1,22 +1,8 @@
-import asyncio
-import aiohttp
-from aiohttp import web
 from cbpi.api.step import CBPiStep, StepResult
-from cbpi.api.timer import Timer
-from cbpi.api.dataclasses import Kettle, Props
-from datetime import datetime
-import time
 from cbpi.api import *
-import logging
-from socket import timeout
-from typing import KeysView
-from cbpi.api.config import ConfigType
-from cbpi.api.base import CBPiBase
 from voluptuous.schema_builder import message
-from cbpi.api.dataclasses import NotificationAction, NotificationType
-import numpy as np
-import requests
-import warnings
+from cbpi.api.dataclasses import NotificationType
+import logging
 import glob
 import os
 
@@ -25,13 +11,16 @@ import os
              Property.Select(label="AutoNext", options=["Yes", "No"], description="Automatically move to next step (Yes) or pause after Notification (No)")])
 class ClearLogsStep(CBPiStep):
 
+    async def on_start(self):
+        try:
+            log_names = glob.glob('./logs/sensor_*.log*')
+            for f in log_names:
+                os.remove(f)
+        except Exception as e:
+            logging.error("Failed to delete sensor log files {} {}".format(id, e))
+
     async def NextStep(self, **kwargs):
         await self.next()
-
-    async def on_start(self):
-        log_names = glob.glob('./logs/sensor_*.log*')
-        for f in log_names:
-            os.remove(f)
 
     async def on_stop(self):
         self.summary = ""
@@ -39,8 +28,7 @@ class ClearLogsStep(CBPiStep):
 
     async def run(self):
         self.AutoNext = True
-        await self.push_update()
-        self.cbpi.notify(NotificationType.INFO)
+        self.cbpi.notify("ClearLogsStep finished", NotificationType.INFO)
         await self.next()
 
         return StepResult.DONE
