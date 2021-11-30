@@ -28,7 +28,7 @@ class ClearLogsStep(CBPiStep):
 
     async def run(self):
         self.AutoNext = True
-        self.cbpi.notify("ClearLogsStep finished", NotificationType.INFO)
+        self.cbpi.notify('ClearLogsStep', 'ClearLogsStep finished', NotificationType.INFO)
         await self.next()
 
         return StepResult.DONE
